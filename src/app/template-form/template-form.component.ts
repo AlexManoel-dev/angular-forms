@@ -19,7 +19,7 @@ export class TemplateFormComponent implements OnInit {
     // Ou esse - objeto do usuario
     //console.log(this.usuario);
     console.log(form);
-    console.log(this.usuario);
+    //console.log(this.usuario);
   }
 
   constructor() { }
