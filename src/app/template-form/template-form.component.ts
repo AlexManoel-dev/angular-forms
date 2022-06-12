@@ -27,4 +27,16 @@ export class TemplateFormComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  // Verificando se o campo é válido ou o valor dele foi alterado, pelo component
+  verificaValidTouched(campo: any) {
+    return !campo.valid && campo.touched;
+  }
+
+  // Aplicando css no [ngClass] por meio do componente
+  aplicaCssErro(campo: any) {
+    return {
+      'is-invalid': this.verificaValidTouched(campo)
+    }
+  }
+
 }
