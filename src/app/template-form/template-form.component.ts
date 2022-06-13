@@ -14,21 +14,21 @@ export class TemplateFormComponent implements OnInit {
     email: null
   };
 
-  onSubmit(form: any) {
+  onSubmit(formulario: any) {
     // Na hora de fazer o submit, quando se usa o two-way-data-binding, pode se escolher qual objeto envia
-    // Esse - objeto do form
-    //console.log(form.form.value);
+    // Esse - objeto do formulario
+    //console.log(formulario.form.value);
     // Ou esse - objeto do usuario
     //console.log(this.usuario);
-    console.log(form);
+    console.log(formulario);
     //console.log(this.usuario);
 
-    this.http.post(`https://httpbin.org/post`, JSON.stringify(form.value))
+    this.http.post(`https://httpbin.org/post`, JSON.stringify(formulario.value))
     .pipe(map(res => res))
     .subscribe(dados => {
       console.log(dados)
-      // Reseta o form
-      form.form.reset();
+      // Reseta o formulario
+      formulario.form.reset();
     });
   }
 

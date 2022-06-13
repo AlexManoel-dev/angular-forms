@@ -1,7 +1,7 @@
 import { map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-data-form',
@@ -27,9 +27,11 @@ export class DataFormComponent implements OnInit {
 
     // Outra forma de criar formulários reativos
     this.formulario = this.formBuilder.group({
-      nome: [null],
-      email: [null]
+      nome: [null, Validators.required],
+      email: [null, [Validators.required, Validators.email]]
     });
+
+    //[Validators.required, Validators.minLength(3), Validators.maxLength(20)]
   }
 
   onSubmit() {
@@ -41,7 +43,7 @@ export class DataFormComponent implements OnInit {
       console.log(dados);
       // Reseta o form
       //this.formulario.reset();
-      this.resetar();
+      //this.resetar();
       // Assim que o response tem saída no console, o formulário é limpo
     },
     // No caso de acontecer erro, o formulário não vai ser resetado
