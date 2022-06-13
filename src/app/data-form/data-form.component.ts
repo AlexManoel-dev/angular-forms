@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-data-form',
@@ -9,11 +9,22 @@ import { FormGroup } from '@angular/forms';
 export class DataFormComponent implements OnInit {
 
   // Variável que vai representar o formulário
-  // formulario: FormGroup;
+  formulario: FormGroup = new FormGroup({});
 
-  constructor() { }
+  constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
+    // Criando formulário reativo
+    // this.formulario = new FormGroup({
+    //   nome: new FormControl(null),
+    //   email: new FormControl(null)
+    // });
+
+    // Outra forma de criar formulários reativos
+    this.formulario = this.formBuilder.group({
+      nome: [null],
+      email: [null]
+    });
   }
 
 }
