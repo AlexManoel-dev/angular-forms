@@ -23,20 +23,26 @@ export class DataFormComponent implements OnInit {
     // Criando formulário reativo
     // this.formulario = new FormGroup({
     //   nome: new FormControl(null),
-    //   email: new FormControl(null)
+    //   email: new FormControl(null),
+    //   Agrupamento de campos de formulário
+    //   endereco: new FormGroup({
+    //    cep: new FormControl(null)
+    //  })
     // });
 
     // Outra forma de criar formulários reativos
     this.formulario = this.formBuilder.group({
       nome: [null, Validators.required],
       email: [null, [Validators.required, Validators.email]],
-      cep: [null, Validators.required],
-      numero: [null, Validators.required],
-      complemento: [null],
-      rua: [null, Validators.required],
-      bairro: [null, Validators.required],
-      cidade: [null, Validators.required],
-      estado: [null, Validators.required]
+      endereco: this.formBuilder.group({
+        cep: [null, Validators.required],
+        numero: [null, Validators.required],
+        complemento: [null],
+        rua: [null, Validators.required],
+        bairro: [null, Validators.required],
+        cidade: [null, Validators.required],
+        estado: [null, Validators.required]
+      })
     });
 
     //[Validators.required, Validators.minLength(3), Validators.maxLength(20)]
