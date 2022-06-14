@@ -1,7 +1,7 @@
 import { ConsultaCepService } from './../shared/services/consulta-cep.service';
 import { EstadoBr } from './../shared/models/estado-br';
 import { DropdownService } from './../shared/services/dropdown.service';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -16,7 +16,8 @@ export class DataFormComponent implements OnInit {
   // Variável que vai representar o formulário
   // Variável que vai representar o formulário
   formulario: FormGroup = new FormGroup({});
-  estados: EstadoBr[] = [];
+  // estados: EstadoBr[] = [];
+  estados: Observable<EstadoBr[]> = new Observable<EstadoBr[]>();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -26,8 +27,11 @@ export class DataFormComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.dropdownService.getEstadosBr()
-    .subscribe(dados => this.estados = dados);
+    // Dar prioridade para usar o pipe async, quando utilizar informações que estão vindo de observables no template
+    this.estados = this.dropdownService.getEstadosBr(); // O pipe async, usado no ngFor no html, faz o subscribe automaticamente
+    // Mesmo com a destruição do componente, a inscrição pode ficar ativa. Ocorrendo o vazamento de memória "memory licks"
+    // this.dropdownService.getEstadosBr()
+    // .subscribe(dados => this.estados = dados);
     // Criando formulário reativo
     // this.formulario = new FormGroup({
     //   nome: new FormControl(null),
