@@ -1,3 +1,4 @@
+import { ConsultaCepService } from './../shared/services/consulta-cep.service';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { map } from 'rxjs';
@@ -32,7 +33,10 @@ export class TemplateFormComponent implements OnInit {
     });
   }
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private cepService: ConsultaCepService
+  ) { }
 
   ngOnInit(): void {
   }
@@ -53,21 +57,11 @@ export class TemplateFormComponent implements OnInit {
     // Nova variável "cep" somente com dígitos.
     cep = cep.replace(/\D/g, '');
 
-    // Verifica se o campo cep possui valor informado.
-    if(cep != ""){
-      // Expressão regular para validar o CEP.
-      var validaCep = /^[0-9]{8}$/;
-
-      // Valida o formato do CEP.
-      if(validaCep.test(cep)){
-        // O método resetaDadosForm, vai mudar qualquer informação que esteja dentro do input e colocar a que vem do via cep(caso o usuário tenha colocado na mão e depois colocado o cep, assim chamando o serviço do viaCEP)
-        this.resetaDadosForm(form);
-        this.http.get(`//viacep.com.br/ws/${cep}/json`)
-          .pipe(map((dados: any) => dados))
-          .subscribe(dados => this.populaDadosForm(dados, form));
-        }
-      }
+    if(cep != null && cep !== '') {
+      this.cepService.consultaCEP(cep)
+      ?.subscribe(dados => this.populaDadosForm(dados, form));
     }
+  }
 
     populaDadosForm(dados: any, formulario: any) {
       // Com os values do nome e email, eles não são resetados, e exibem o valor já existente

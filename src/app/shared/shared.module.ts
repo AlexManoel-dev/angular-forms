@@ -17,6 +17,7 @@ import { CommonModule } from '@angular/common';
     HttpClientModule
   ],
   exports: [
+    // Talvez exportar o módulo de forms e de reactiveForms
     FormDebugComponent,
     CampoControlErroComponent
   ],

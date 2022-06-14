@@ -1,3 +1,4 @@
+import { ConsultaCepService } from './../shared/services/consulta-cep.service';
 import { EstadoBr } from './../shared/models/estado-br';
 import { DropdownService } from './../shared/services/dropdown.service';
 import { map } from 'rxjs';
@@ -20,7 +21,8 @@ export class DataFormComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private http: HttpClient,
-    private dropdownService: DropdownService
+    private dropdownService: DropdownService,
+    private cepService: ConsultaCepService
   ) { }
 
   ngOnInit(): void {
@@ -120,7 +122,7 @@ export class DataFormComponent implements OnInit {
     }
   }
 
-  consultaCEP() {
+  /*consultaCEP() {
 
     let cep = this.formulario.get('endereco.cep')?.value;
 
@@ -141,6 +143,15 @@ export class DataFormComponent implements OnInit {
           .subscribe(dados => this.populaDadosForm(dados));
         }
       }
+    }*/
+
+    consultaCEP() {
+      let cep = this.formulario.get('endereco.cep')?.value;
+
+      if(cep != null && cep !== '') {
+        this.cepService.consultaCEP(cep)
+        ?.subscribe(dados => this.populaDadosForm(dados));
+      }      
     }
 
     populaDadosForm(dados: any) {
