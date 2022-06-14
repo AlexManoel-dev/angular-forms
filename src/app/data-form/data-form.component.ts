@@ -54,4 +54,28 @@ export class DataFormComponent implements OnInit {
     this.formulario.reset();
   }
 
+  // Verificando se o campo é válido ou o valor dele foi alterado, pelo component
+  verificaValidTouched(campo: any) {
+
+    // Acesso do campo desejado
+    //this.formulario.controls[campo]
+
+    // Existe também o get
+    return !this.formulario.get(campo)?.valid && this.formulario.get(campo)?.touched;
+  }
+
+  verificaEmailInvalido() {
+    let campoEmail = this.formulario.get('email');
+    if (campoEmail?.errors) {
+      // A gente consegue acessar o email dentro de errors, porque o javascript também trata arrays e objetos como dicionário(chave-valor)
+      return campoEmail.errors['email'] && campoEmail.touched;
+    }
+  }
+
+  // Aplicando css no [ngClass] por meio do componente
+  aplicaCssErro(campo: any) {
+    return {
+      'is-invalid': this.verificaValidTouched(campo)
+    }
+  }
 }

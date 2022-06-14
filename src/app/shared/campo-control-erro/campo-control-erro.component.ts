@@ -7,7 +7,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class CampoControlErroComponent implements OnInit {
 
-  @Input() mostrarErro: boolean = false;
+  @Input() mostrarErro: boolean | undefined = false;
   @Input() msgErro: string = '';
 
   constructor() { }
