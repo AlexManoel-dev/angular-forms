@@ -51,17 +51,37 @@ export class DataFormComponent implements OnInit {
   onSubmit() {
     console.log(this.formulario.value);
 
-    this.http.post(`https://httpbin.org/post`, JSON.stringify(this.formulario.value))
-    .pipe(map((res) => res))
-    .subscribe(dados => {
-      console.log(dados);
-      // Reseta o form
-      //this.formulario.reset();
-      //this.resetar();
-      // Assim que o response tem saída no console, o formulário é limpo
-    },
-    // No caso de acontecer erro, o formulário não vai ser resetado
-    (error: any) => alert('Erro'));
+    if (this.formulario.valid) {
+      this.http.post(`https://httpbin.org/post`, JSON.stringify(this.formulario.value))
+      .pipe(map((res) => res))
+      .subscribe(dados => {
+        console.log(dados);
+        // Reseta o form
+        //this.formulario.reset();
+        //this.resetar();
+        // Assim que o response tem saída no console, o formulário é limpo
+      },
+      // No caso de acontecer erro, o formulário não vai ser resetado
+      (error: any) => alert('Erro'));
+    } else {
+      console.log('Fomulário inválido!');
+      this.verificaValidacoesForm(this.formulario);
+    }
+  }
+
+  verificaValidacoesForm(formGroup: FormGroup) {
+    // Função recursiva - Aquela que chama a si mesma com condição, senão seria um loop infinito
+    Object.keys(formGroup.controls).forEach(campo => {
+      console.log(campo);
+      const controle = formGroup.get(campo);
+      controle?.markAsTouched();
+      // Com o dirty, a mensagem de erro do email não apareceu
+      //controle?.markAsDirty();
+
+      if(controle instanceof FormGroup){
+        this.verificaValidacoesForm(controle);
+      }
+    })
   }
 
   resetar() {
@@ -75,7 +95,8 @@ export class DataFormComponent implements OnInit {
     //this.formulario.controls[campo]
 
     // Existe também o get
-    return !this.formulario.get(campo)?.valid && this.formulario.get(campo)?.touched;
+    return !this.formulario.get(campo)?.valid && (this.formulario.get(campo)?.touched || this.formulario.get(campo)?.dirty);
+    //                 Inválido                                 Com foco                               Modificado
   }
 
   verificaEmailInvalido() {
@@ -92,4 +113,55 @@ export class DataFormComponent implements OnInit {
       'is-invalid': this.verificaValidTouched(campo)
     }
   }
+
+  consultaCEP() {
+
+    let cep = this.formulario.get('endereco.cep')?.value;
+
+    // Nova variável "cep" somente com dígitos.
+    cep = cep.replace(/\D/g, '');
+
+    // Verifica se o campo cep possui valor informado.
+    if(cep != ""){
+      // Expressão regular para validar o CEP.
+      var validaCep = /^[0-9]{8}$/;
+
+      // Valida o formato do CEP.
+      if(validaCep.test(cep)){
+        // O método resetaDadosForm, vai mudar qualquer informação que esteja dentro do input e colocar a que vem do via cep(caso o usuário tenha colocado na mão e depois colocado o cep, assim chamando o serviço do viaCEP)
+        this.resetaDadosForm();
+        this.http.get(`//viacep.com.br/ws/${cep}/json`)
+          .pipe(map((dados: any) => dados))
+          .subscribe(dados => this.populaDadosForm(dados));
+        }
+      }
+    }
+
+    populaDadosForm(dados: any) {
+      this.formulario.patchValue({
+        endereco: {
+          rua: dados.logradouro,
+          complemento: dados.complemento,
+          bairro: dados.bairro,
+          cidade: dados.localidade,
+          estado: dados.uf
+        }
+      });
+
+      // Caso queira popular apenas um campo do seu formulário, pode-se utilizar o setValue daquele campo em específico
+      this.formulario.get('nome')?.setValue('Alex')
+    }
+
+    resetaDadosForm() {
+      this.formulario.patchValue({
+        endereco: {
+          rua: null,
+          complemento: null,
+          bairro: null,
+          cidade: null,
+          estado: null
+        }
+      });
+    }
+
 }
