@@ -11,6 +11,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 export class DataFormComponent implements OnInit {
 
   // Variável que vai representar o formulário
+  // Variável que vai representar o formulário
   formulario: FormGroup = new FormGroup({});
 
   constructor(
@@ -28,7 +29,14 @@ export class DataFormComponent implements OnInit {
     // Outra forma de criar formulários reativos
     this.formulario = this.formBuilder.group({
       nome: [null, Validators.required],
-      email: [null, [Validators.required, Validators.email]]
+      email: [null, [Validators.required, Validators.email]],
+      cep: [null, Validators.required],
+      numero: [null, Validators.required],
+      complemento: [null],
+      rua: [null, Validators.required],
+      bairro: [null, Validators.required],
+      cidade: [null, Validators.required],
+      estado: [null, Validators.required]
     });
 
     //[Validators.required, Validators.minLength(3), Validators.maxLength(20)]
@@ -55,7 +63,7 @@ export class DataFormComponent implements OnInit {
   }
 
   // Verificando se o campo é válido ou o valor dele foi alterado, pelo component
-  verificaValidTouched(campo: any) {
+  verificaValidTouched(campo: string) {
 
     // Acesso do campo desejado
     //this.formulario.controls[campo]
@@ -73,7 +81,7 @@ export class DataFormComponent implements OnInit {
   }
 
   // Aplicando css no [ngClass] por meio do componente
-  aplicaCssErro(campo: any) {
+  aplicaCssErro(campo: string) {
     return {
       'is-invalid': this.verificaValidTouched(campo)
     }
