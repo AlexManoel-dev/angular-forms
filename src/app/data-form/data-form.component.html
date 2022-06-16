@@ -101,10 +101,23 @@
         </div>
     </div>
     <div class="form-row col-sm-12">
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="termos" formControlName="termos" [ngClass]="aplicaCssErro('termos')">
-            <label class="form-check-label" for="termos">Aceito os termos.</label>
-            <app-campo-control-erro [mostrarErro]="!formulario.get('termos')?.valid" msgErro="Por favor, aceite os termos."></app-campo-control-erro>
+        <div class="form-group col-md-4">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="termos" formControlName="termos" [ngClass]="aplicaCssErro('termos')">
+                <label class="form-check-label" for="termos">Aceito os termos.</label>
+                <app-campo-control-erro [mostrarErro]="!formulario.get('termos')?.valid" msgErro="Por favor, aceite os termos."></app-campo-control-erro>
+            </div>
+        </div>
+        <div class="form-group col-md-4">
+            <label class="form-check-label" for="frameworks">Frameworks</label>
+            <div id="frameworks">
+                <!-- <div class="form-check form-check-inline" formArrayName="frameworks" *ngFor="let item of formulario.get('frameworks')?.value; let i = index"> -->
+                <!-- Gambiarra achada em um comentário -->
+                <div class="form-check form-check-inline" formArrayName="frameworks" *ngFor="let item of getFrameworksControls(); let i = index">
+                    <input class="form-check-input" type="checkbox" [ngClass]="aplicaCssErro('frameworks')" [formControlName]="i">
+                    <label class="form-check-label">{{ frameworks[i] }}</label>
+                </div>
+            </div>
         </div>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>

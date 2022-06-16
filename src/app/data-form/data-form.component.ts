@@ -7,7 +7,7 @@ import { DropdownService } from './../shared/services/dropdown.service';
 import { map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-data-form',
@@ -24,6 +24,7 @@ export class DataFormComponent implements OnInit {
   cargos: Cargo[] = [];
   tecnologias: Tecnologia[] = [];
   newsletterOp: Newsletter[] = [];
+  frameworks = ['Angular', 'React', 'Vue', 'Sencha'];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -68,17 +69,43 @@ export class DataFormComponent implements OnInit {
       tecnologias: [null],
       newsletter: ['s'], // Valor padrão
       // O pattern é usado para poder validar uma expressão regular
-      termos: [null, Validators.pattern('true')] // Forma mais simples de validar um campo do tipo toggle, porque ele precisa ser true para validar
+      termos: [null, Validators.pattern('true')], // Forma mais simples de validar um campo do tipo toggle, porque ele precisa ser true para validar
+      frameworks: this.buildFrameworks()
     });
 
     //[Validators.required, Validators.minLength(3), Validators.maxLength(20)]
   }
 
+  buildFrameworks() {
+    const values = this.frameworks.map(v => new FormControl(false));
+    return this.formBuilder.array(values);
+    // Em cima, está sendo feito o mesmo código, porém de forma dinâmica
+    // this.formBuilder.array( [
+    //   new FormControl(false),
+    //   new FormControl(false),
+    //   new FormControl(false),
+    //   new FormControl(false)
+    // ]);
+  }
+
   onSubmit() {
     console.log(this.formulario.value);
 
+    let valueSubmit = Object.assign({}, this.formulario.value)
+
+    /**
+     * Passa pelo array de frameworks, e se for true, pega somente o valor, caso o for false, retorna null. E pra refinar, filtra os que são diferentes de nulo, fazendo assim com que os nulos não apareçam
+     */
+    valueSubmit = Object.assign(valueSubmit, {
+      frameworks: valueSubmit.frameworks
+        .map((v: any, i: any) => v ? this.frameworks[i] : null)
+        .filter((v: any) => v !== null)
+    })
+
+    console.log(valueSubmit);
+
     if (this.formulario.valid) {
-      this.http.post(`https://httpbin.org/post`, JSON.stringify(this.formulario.value))
+      this.http.post(`https://httpbin.org/post`, JSON.stringify(valueSubmit))
       .pipe(map((res) => res))
       .subscribe(dados => {
         console.log(dados);
@@ -210,5 +237,10 @@ export class DataFormComponent implements OnInit {
 
     setarTecnologias() {
       this.formulario.get('tecnologias')?.setValue(['java', 'javascript', 'php']);
+    }
+
+    // Gambiarra achada em um comentário
+    getFrameworksControls() {
+      return this.formulario.get('frameworks') ? (<FormArray>this.formulario.get('frameworks')).controls : null;
     }
 }
