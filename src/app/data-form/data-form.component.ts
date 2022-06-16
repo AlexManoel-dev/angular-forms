@@ -1,6 +1,7 @@
 import { EstadoBr } from './../shared/models/estado-br';
 import { Cargo } from '../shared/models/cargo.model';
 import { Tecnologia } from '../shared/models/tecnologia.model';
+import { Newsletter } from '../shared/models/newsletter.model';
 import { ConsultaCepService } from './../shared/services/consulta-cep.service';
 import { DropdownService } from './../shared/services/dropdown.service';
 import { map, Observable } from 'rxjs';
@@ -22,6 +23,7 @@ export class DataFormComponent implements OnInit {
   estados: Observable<EstadoBr[]> = new Observable<EstadoBr[]>();
   cargos: Cargo[] = [];
   tecnologias: Tecnologia[] = [];
+  newsletterOp: Newsletter[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -38,6 +40,7 @@ export class DataFormComponent implements OnInit {
     // .subscribe(dados => this.estados = dados);
     this.cargos = this.dropdownService.getCargos();
     this.tecnologias = this.dropdownService.getTecnologias();
+    this.newsletterOp = this.dropdownService.getNewsletter();
     // Criando formulário reativo
     // this.formulario = new FormGroup({
     //   nome: new FormControl(null),
@@ -62,7 +65,8 @@ export class DataFormComponent implements OnInit {
         estado: [null, Validators.required]
       }),
       cargo: [null],
-      tecnologias: [null]
+      tecnologias: [null],
+      newsletter: ['s'] // Valor padrão
     });
 
     //[Validators.required, Validators.minLength(3), Validators.maxLength(20)]
