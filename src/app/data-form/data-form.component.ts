@@ -66,7 +66,9 @@ export class DataFormComponent implements OnInit {
       }),
       cargo: [null],
       tecnologias: [null],
-      newsletter: ['s'] // Valor padrão
+      newsletter: ['s'], // Valor padrão
+      // O pattern é usado para poder validar uma expressão regular
+      termos: [null, Validators.pattern('true')] // Forma mais simples de validar um campo do tipo toggle, porque ele precisa ser true para validar
     });
 
     //[Validators.required, Validators.minLength(3), Validators.maxLength(20)]
