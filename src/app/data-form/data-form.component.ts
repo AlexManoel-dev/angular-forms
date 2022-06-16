@@ -7,7 +7,8 @@ import { DropdownService } from './../shared/services/dropdown.service';
 import { map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormValidations } from '../shared/form-validations';
 
 @Component({
   selector: 'app-data-form',
@@ -78,7 +79,7 @@ export class DataFormComponent implements OnInit {
 
   buildFrameworks() {
     const values = this.frameworks.map(v => new FormControl(false));
-    return this.formBuilder.array(values);
+    return this.formBuilder.array(values, FormValidations.requiredMinCheckBox(1));
     // Em cima, está sendo feito o mesmo código, porém de forma dinâmica
     // this.formBuilder.array( [
     //   new FormControl(false),
@@ -87,6 +88,43 @@ export class DataFormComponent implements OnInit {
     //   new FormControl(false)
     // ]);
   }
+
+  // requiredMinCheckbox(min = 1) {
+  //   const validator = (formArray: FormArray) => {
+  //     // const values = formArray.controls;
+  //     // let totalChecked = 0;
+  //     // for (let i = 0; i < values.length; i++) {
+  //     //   if (values[i].value) {
+  //     //     totalChecked += 1;
+  //     //   }
+  //     // }
+  //     // Programação funcional
+  //     const totalChecked = formArray.controls
+  //       .map(v => v.value)
+  //       .reduce((total, current) => current ? total + current : total, 0);
+  //     return totalChecked >= min ? null : { required: true };
+  //   }
+  //   return validator;
+  // }
+
+  // RequiredMinCheckbox atualizado
+
+  // /**
+  //  * 
+  //  * @param min - Mínimo de checkboxes a serem selecionadas
+  //  * @returns - Retorna o nulo se o número de checkboxes for igual ou maior que o mínimo. Ou required: true, caso o contrário
+  //  */
+  // requiredMinCheckBox(min = 1){
+  //   const validator = (formArray: AbstractControl) => {
+  //     if(formArray instanceof FormArray){
+  //       const totalChecked = formArray.controls.map(v => v.value)
+  //         .reduce((total: number, atual: number) => (atual ? total + atual : total), 0);
+  //       return totalChecked >= min ? null : {required: true};
+  //     }
+  //     throw new Error('formArray is not an instance of FormArray');
+  //   };
+  //   return validator;
+  // }
 
   onSubmit() {
     console.log(this.formulario.value);
