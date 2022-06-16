@@ -1,3 +1,4 @@
+import { Cargo } from './../models/cargo.model';
 import { ConsultaCepService } from './../shared/services/consulta-cep.service';
 import { EstadoBr } from './../shared/models/estado-br';
 import { DropdownService } from './../shared/services/dropdown.service';
@@ -18,6 +19,8 @@ export class DataFormComponent implements OnInit {
   formulario: FormGroup = new FormGroup({});
   // estados: EstadoBr[] = [];
   estados: Observable<EstadoBr[]> = new Observable<EstadoBr[]>();
+  cargos: Cargo[] = [];
+  cargo: Cargo = new Cargo();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -32,6 +35,7 @@ export class DataFormComponent implements OnInit {
     // Mesmo com a destruição do componente, a inscrição pode ficar ativa. Ocorrendo o vazamento de memória "memory licks"
     // this.dropdownService.getEstadosBr()
     // .subscribe(dados => this.estados = dados);
+    this.cargos = this.dropdownService.getCargos();
     // Criando formulário reativo
     // this.formulario = new FormGroup({
     //   nome: new FormControl(null),
@@ -54,7 +58,8 @@ export class DataFormComponent implements OnInit {
         bairro: [null, Validators.required],
         cidade: [null, Validators.required],
         estado: [null, Validators.required]
-      })
+      }),
+      cargo: [null]
     });
 
     //[Validators.required, Validators.minLength(3), Validators.maxLength(20)]
@@ -185,4 +190,12 @@ export class DataFormComponent implements OnInit {
       });
     }
 
+    setarCargo() {
+      const cargo = { nome: 'Dev', nivel: 'Pleno', desc: 'Dev Pl' }
+      this.formulario.get('cargo')?.setValue(cargo);
+    }
+
+    compararCargos(obj1: Cargo, obj2: Cargo) {
+      return obj1 && obj2 ? (obj1.nome === obj2.nome && obj1.nivel === obj2.nivel) : obj1 === obj2;
+    }
 }
