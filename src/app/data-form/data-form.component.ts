@@ -1,6 +1,7 @@
-import { Cargo } from './../models/cargo.model';
-import { ConsultaCepService } from './../shared/services/consulta-cep.service';
 import { EstadoBr } from './../shared/models/estado-br';
+import { Cargo } from '../shared/models/cargo.model';
+import { Tecnologia } from '../shared/models/tecnologia.model';
+import { ConsultaCepService } from './../shared/services/consulta-cep.service';
 import { DropdownService } from './../shared/services/dropdown.service';
 import { map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -20,7 +21,7 @@ export class DataFormComponent implements OnInit {
   // estados: EstadoBr[] = [];
   estados: Observable<EstadoBr[]> = new Observable<EstadoBr[]>();
   cargos: Cargo[] = [];
-  cargo: Cargo = new Cargo();
+  tecnologias: Tecnologia[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -36,6 +37,7 @@ export class DataFormComponent implements OnInit {
     // this.dropdownService.getEstadosBr()
     // .subscribe(dados => this.estados = dados);
     this.cargos = this.dropdownService.getCargos();
+    this.tecnologias = this.dropdownService.getTecnologias();
     // Criando formulário reativo
     // this.formulario = new FormGroup({
     //   nome: new FormControl(null),
@@ -59,7 +61,8 @@ export class DataFormComponent implements OnInit {
         cidade: [null, Validators.required],
         estado: [null, Validators.required]
       }),
-      cargo: [null]
+      cargo: [null],
+      tecnologias: [null]
     });
 
     //[Validators.required, Validators.minLength(3), Validators.maxLength(20)]
@@ -197,5 +200,9 @@ export class DataFormComponent implements OnInit {
 
     compararCargos(obj1: Cargo, obj2: Cargo) {
       return obj1 && obj2 ? (obj1.nome === obj2.nome && obj1.nivel === obj2.nivel) : obj1 === obj2;
+    }
+
+    setarTecnologias() {
+      this.formulario.get('tecnologias')?.setValue(['java', 'javascript', 'php']);
     }
 }

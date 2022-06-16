@@ -73,16 +73,27 @@
             </div>
         </div>
     </div>
-    <div class="form-group">
-        <label for="cargo" class="control-label">Cargo</label>
-        <select type="text" class="form-control" id="cargo" formControlName="cargo" [ngClass]="aplicaCssErro('cargo')" [compareWith]="compararCargos">
-            <!-- Enviando o objeto cargo, ao invés de um valor somente. Caso for usar esse método de envio de dados, sempre use ngValue e o compareWith, para que o Angular saiba comparar os valores -->
-            <!-- E assim ter um pouco mais de controle, e pode escolher quais são os campos que você vai comparar para fazer a comparação dos objetos -->
-            <option *ngFor="let cargo of cargos" [ngValue]="cargo">{{ cargo.desc }}</option>
-        </select>
+    <div class="form-row col-sm-12">
+        <div class="form-group col-md-5">
+            <label for="cargo" class="control-label">Cargo</label>
+            <select type="text" class="form-control" id="cargo" formControlName="cargo" [ngClass]="aplicaCssErro('cargo')" [compareWith]="compararCargos">
+                <!-- Enviando o objeto cargo, ao invés de um valor somente. Caso for usar esse método de envio de dados, sempre use ngValue e o compareWith, para que o Angular saiba comparar os valores -->
+                <!-- E assim ter um pouco mais de controle, e pode escolher quais são os campos que você vai comparar para fazer a comparação dos objetos -->
+                <option *ngFor="let cargo of cargos" [ngValue]="cargo">{{ cargo.desc }}</option>
+            </select>
+        </div>
+        <div class="form-group col-md-5">
+            <label for="tecnologias" class="control-label">Tecnologias</label>
+            <select multiple type="text" class="form-control" id="tecnologias" formControlName="tecnologias" [ngClass]="aplicaCssErro('tecnologias')">
+                <!-- Enviando o objeto tecnologias, ao invés de um valor somente. Caso for usar esse método de envio de dados, sempre use ngValue e o compareWith, para que o Angular saiba comparar os valores -->
+                <!-- E assim ter um pouco mais de controle, e pode escolher quais são os campos que você vai comparar para fazer a comparação dos objetos -->
+                <option *ngFor="let tecnologia of tecnologias" [value]="tecnologia.nome">{{ tecnologia.desc }}</option>
+            </select>
+        </div>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
     <button type="button" class="btn btn-secondary" (click)="resetar()">Cancelar</button>
-    <button type="button" class="btn btn-secondary" (click)="setarCargo()">Cargo</button>
+    <button type="button" class="btn btn-default" (click)="setarCargo()">Cargo</button>
+    <button type="button" class="btn btn-info" (click)="setarTecnologias()">Tecnologias</button>
     <app-form-debug [form]="formulario"></app-form-debug>
 </form>
