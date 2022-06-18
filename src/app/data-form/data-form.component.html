@@ -27,7 +27,11 @@
             <div class="form-group col-md-3">
                 <label for="cep" class="control-label">CEP</label>
                 <input type="text" class="form-control" id="cep" formControlName="cep" [ngClass]="aplicaCssErro('endereco.cep')" (blur)="consultaCEP()">
-                <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.cep')" msgErro="CEP é obrigatório."></app-campo-control-erro>
+                <!-- <app-campo-control-erro [mostrarErro]="verificaValidTouched('endereco.cep')" msgErro="CEP é obrigatório."></app-campo-control-erro> -->
+                <!-- Verifica se o campo foi preenchido ou não, no caso, required. E, se foi alterado ou obteve o foco -->
+                <app-campo-control-erro [mostrarErro]="verificaRequired('endereco.cep')" msgErro="CEP é obrigatório."></app-campo-control-erro>
+                <!-- Ele verifica se existe o erro de cepInvalido, e se existe, retorna true, assim, aparecendo o alert. Senão, retorna null, e não aparece nada -->
+                <app-campo-control-erro [mostrarErro]="formulario.get('endereco.cep')?.hasError('cepInvalido')" msgErro="CEP inválido."></app-campo-control-erro>
             </div>
             <div class="form-group col-md-3">
                 <label for="numero" class="control-label">Número</label>

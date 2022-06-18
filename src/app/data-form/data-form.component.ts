@@ -58,7 +58,8 @@ export class DataFormComponent implements OnInit {
       nome: [null, Validators.required],
       email: [null, [Validators.required, Validators.email]],
       endereco: this.formBuilder.group({
-        cep: [null, Validators.required],
+        // Como não está sendo passado nenhum parâmetro extra, não é preciso passar uma função e sim só a validação
+        cep: [null, [Validators.required, FormValidations.cepValidator]],
         numero: [null, Validators.required],
         complemento: [null],
         rua: [null, Validators.required],
@@ -71,6 +72,7 @@ export class DataFormComponent implements OnInit {
       newsletter: ['s'], // Valor padrão
       // O pattern é usado para poder validar uma expressão regular
       termos: [null, Validators.pattern('true')], // Forma mais simples de validar um campo do tipo toggle, porque ele precisa ser true para validar
+      // Já aqui, é necessário passar a função
       frameworks: this.buildFrameworks()
     });
 
@@ -188,6 +190,14 @@ export class DataFormComponent implements OnInit {
     // Existe também o get
     return !this.formulario.get(campo)?.valid && (this.formulario.get(campo)?.touched || this.formulario.get(campo)?.dirty);
     //                 Inválido                                 Com foco                               Modificado
+  }
+
+  // Verifica se o campo foi preenchido ou não, no caso, required. E, se foi alterado ou obteve o foco
+  verificaRequired(campo: string) {
+    return (
+      this.formulario.get(campo)?.hasError('required') &&
+      (this.formulario.get(campo)?.touched || this.formulario.get(campo)?.dirty)
+    )
   }
 
   verificaEmailInvalido() {

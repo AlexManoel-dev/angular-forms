@@ -1,4 +1,4 @@
-import { AbstractControl, FormArray } from '@angular/forms';
+import { AbstractControl, ControlContainer, FormArray, FormControl } from '@angular/forms';
 
 // Classe que exporta as validações para todos os arquivos. E não precisa instanciar a classe pra fazer a chamada
 // Basta importar
@@ -9,6 +9,7 @@ export class FormValidations {
    * @returns - Retorna o nulo se o número de checkboxes for igual ou maior que o mínimo. Ou required: true, caso o contrário
    */
   static requiredMinCheckBox(min = 1){
+    // Aqui a gente recebe o parâmetro extra, e depois o controle
     const validator = (formArray: AbstractControl) => {
       if(formArray instanceof FormArray){
         const totalChecked = formArray.controls.map(v => v.value)
@@ -18,5 +19,17 @@ export class FormValidations {
       throw new Error('formArray is not an instance of FormArray');
     };
     return validator;
+  }
+
+  static cepValidator(control: FormControl) {
+    // Aqui a gente recebe o controle direto
+
+    const cep = control.value;
+    if (cep && cep !== '') {
+      const validaCep = /^[0-9]{8}$/;
+      return validaCep.test(cep) ? null : { cepInvalido: true };
+    }
+    // Caso for válido, retorna null
+    return null;
   }
 }
