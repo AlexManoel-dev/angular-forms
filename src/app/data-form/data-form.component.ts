@@ -1,3 +1,4 @@
+import { VerificaEmailService } from './services/verifica-email.service';
 import { EstadoBr } from './../shared/models/estado-br';
 import { Cargo } from '../shared/models/cargo.model';
 import { Tecnologia } from '../shared/models/tecnologia.model';
@@ -31,10 +32,12 @@ export class DataFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private http: HttpClient,
     private dropdownService: DropdownService,
-    private cepService: ConsultaCepService
+    private cepService: ConsultaCepService,
+    private verificaEmailService: VerificaEmailService
   ) { }
 
   ngOnInit(): void {
+    // this.verificaEmailService.verificarEmail('email@email.com').subscribe();
     // Dar prioridade para usar o pipe async, quando utilizar informações que estão vindo de observables no template
     this.estados = this.dropdownService.getEstadosBr(); // O pipe async, usado no ngFor no html, faz o subscribe automaticamente
     // Mesmo com a destruição do componente, a inscrição pode ficar ativa. Ocorrendo o vazamento de memória "memory licks"
@@ -56,7 +59,14 @@ export class DataFormComponent implements OnInit {
     // Outra forma de criar formulários reativos
     this.formulario = this.formBuilder.group({
       nome: [null, Validators.required],
-      email: [null, [Validators.required, Validators.email]],
+      // Primeiro, o valor inicial. Segundo, validações síncronas. Terceiro, validações assíncronas
+      // Se for só uma validação, funciona sem os colchetes, já se for mais de uma, é necessário. E sim, da pra fazer o uso de mais de uma validação por campo
+      // O Angular ficou perdido com relação ao escopo, para esse erro não acontecer, basta associar o escopo da validação desse campo com o próprio componente
+      // Usando o .bind(this)
+      // Isso acaba com o problema de escopo
+      // Outra forma de acabar com esse problema, seria reescrevendo a validação, para que ela recebesse o serviço como parâmetro, e então não precisaria fazer o bind
+      // Caso não passar o serviço como parâmetro, é necessário o uso do bind
+      email: [null, [Validators.required, Validators.email], [this.validarEmail.bind(this)]],
       // Essa validação vai cobrir as outras, portanto só ela já basta
       confirmarEmail: [null, [FormValidations.equalsTo('email')]],
       endereco: this.formBuilder.group({
@@ -292,5 +302,11 @@ export class DataFormComponent implements OnInit {
     // Gambiarra achada em um comentário
     getFrameworksControls() {
       return this.formulario.get('frameworks') ? (<FormArray>this.formulario.get('frameworks')).controls : null;
+    }
+
+    // Validação assíncrona
+    validarEmail(formControl: FormControl) {
+      return this.verificaEmailService.verificarEmail(formControl.value)
+        .pipe(map(emailExiste => emailExiste ? { emailInvalido: true } : null))
     }
 }

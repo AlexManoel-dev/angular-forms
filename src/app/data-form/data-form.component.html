@@ -18,6 +18,12 @@
             <!-- Se quiser fazer a expressão direto, pode-se fazer assim -->
             <app-campo-control-erro [mostrarErro]="!formulario.controls['email'].valid && formulario.controls['email'].touched" msgErro="Email é obrigatório."></app-campo-control-erro>
             <app-campo-control-erro [mostrarErro]="verificaEmailInvalido()" msgErro="Email inválido."></app-campo-control-erro>
+            <!-- Enquanto a resposta estiver sendo obtida pelo servidor, o status que se encontra é o PENDING -->
+            <app-campo-control-erro [mostrarErro]="formulario.get('email')?.status === 'PENDING'" msgErro="Validando email..."></app-campo-control-erro>
+            <!-- Mostra somente se o email nunca foi cadastrado -->
+            <app-campo-control-erro [mostrarErro]="formulario.get('email')?.status === 'VALID'" msgErro="Email válido!"></app-campo-control-erro>
+            <!-- Mostra, se o email se encontra no json de emails -->
+            <app-campo-control-erro [mostrarErro]="formulario.get('email')?.hasError('emailInvalido')" msgErro="Email já cadastrado!"></app-campo-control-erro>
             <!-- Caso deseje fazer com o get (está sendo necessário o uso do ?, pois ocorre um erro dizendo que possivelmente é null) -->
             <!-- <app-campo-control-erro [mostrarErro]="!formulario.get('nome')?.valid && formulario.get('nome')?.touched" msgErro="Email é obrigatório."></app-campo-control-erro> -->
         </div>
