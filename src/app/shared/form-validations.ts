@@ -1,4 +1,4 @@
-import { AbstractControl, ControlContainer, FormArray, FormControl } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 
 // Classe que exporta as validações para todos os arquivos. E não precisa instanciar a classe pra fazer a chamada
 // Basta importar
@@ -31,5 +31,29 @@ export class FormValidations {
     }
     // Caso for válido, retorna null
     return null;
+  }
+
+  // Mesma estratégia do método que possui um parâmetro extra
+  static equalsTo(otherField: string) {
+    const validator = (formControl: FormControl) => {
+      if(otherField == null) {
+        throw new Error('É necessário informar um campo.');
+      }
+      // O Angular vai executar a validação assim que o campo for renderizado na tela, e pode ser que no momento que a gente renderize o campo, o formulário ainda não esteja pronto
+      // Validação que evita esse erro
+      if (!formControl.root || !(<FormGroup>formControl.root).controls) {
+        return null;
+      }
+      const field = (<FormGroup>formControl.root).get(otherField);
+      if(!field) {
+        throw new Error('É necessário informar um campo válido.');
+      }
+      if(field.value !== formControl.value) {
+        return { equalsTo: otherField };
+      }
+      // Caso for igual, retorna null para dizer que o campo está válido
+      return null;
+    }
+    return validator;
   }
 }

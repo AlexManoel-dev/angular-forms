@@ -57,6 +57,8 @@ export class DataFormComponent implements OnInit {
     this.formulario = this.formBuilder.group({
       nome: [null, Validators.required],
       email: [null, [Validators.required, Validators.email]],
+      // Essa validação vai cobrir as outras, portanto só ela já basta
+      confirmarEmail: [null, [FormValidations.equalsTo('email')]],
       endereco: this.formBuilder.group({
         // Como não está sendo passado nenhum parâmetro extra, não é preciso passar uma função e sim só a validação
         cep: [null, [Validators.required, FormValidations.cepValidator]],
