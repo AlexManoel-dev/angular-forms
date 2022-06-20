@@ -4,13 +4,15 @@ import { CampoControlErroComponent } from './campo-control-erro/campo-control-er
 import { FormDebugComponent } from './form-debug/form-debug.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ErrorMsgComponent } from './error-msg/error-msg.component';
 
 
 
 @NgModule({
   declarations: [
     FormDebugComponent,
-    CampoControlErroComponent
+    CampoControlErroComponent,
+    ErrorMsgComponent
   ],
   imports: [
     CommonModule,
@@ -19,7 +21,8 @@ import { CommonModule } from '@angular/common';
   exports: [
     // Talvez exportar o módulo de forms e de reactiveForms
     FormDebugComponent,
-    CampoControlErroComponent
+    CampoControlErroComponent,
+    ErrorMsgComponent
   ],
   providers: [DropdownService]
 })

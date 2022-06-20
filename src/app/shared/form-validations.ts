@@ -56,4 +56,19 @@ export class FormValidations {
     }
     return validator;
   }
+
+  static getErrorMsg(fieldName: string, validatorName: string, validatorValue?: any) {
+    const config: { [id: string]: string } = {
+      'required': `${fieldName} é obrigatório.`,
+      'minlength': `${fieldName} precisa ter no mínimo ${validatorValue.requiredLength} caracteres.`,
+      'maxlength': `${fieldName} precisa ter no máximo ${validatorValue.requiredLength} caracteres.`,
+      // Não precisa ser erros somente do Angular, é possível colocar os erros customizados
+      'cepInvalido': 'CEP inválido.',
+      'emailInvalido': 'O e-mail informado já está cadastrado!',
+      'equalsTo': 'Os campos precisam ser iguais.',
+      'pattern': 'Campo inválido.'
+    };
+    // Conferir último comentário do vídeo
+    return config[validatorName];
+  }
 }
