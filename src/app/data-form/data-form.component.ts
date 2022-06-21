@@ -1,3 +1,4 @@
+import { BaseFormComponent } from './../shared/base-form/base-form.component';
 import { VerificaEmailService } from './services/verifica-email.service';
 import { EstadoBr } from './../shared/models/estado-br';
 import { Cargo } from '../shared/models/cargo.model';
@@ -16,11 +17,11 @@ import { FormValidations } from '../shared/form-validations';
   templateUrl: './data-form.component.html',
   styleUrls: ['./data-form.component.scss']
 })
-export class DataFormComponent implements OnInit {
+export class DataFormComponent extends BaseFormComponent implements OnInit {
 
   // Variável que vai representar o formulário
   // Variável que vai representar o formulário
-  formulario: FormGroup = new FormGroup({});
+  // formulario: FormGroup = new FormGroup({});
   // estados: EstadoBr[] = [];
   estados: Observable<EstadoBr[]> = new Observable<EstadoBr[]>();
   cargos: Cargo[] = [];
@@ -34,9 +35,11 @@ export class DataFormComponent implements OnInit {
     private dropdownService: DropdownService,
     private cepService: ConsultaCepService,
     private verificaEmailService: VerificaEmailService
-  ) { }
+  ) { 
+    super();
+  }
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
     // this.verificaEmailService.verificarEmail('email@email.com').subscribe();
     // Dar prioridade para usar o pipe async, quando utilizar informações que estão vindo de observables no template
     this.estados = this.dropdownService.getEstadosBr(); // O pipe async, usado no ngFor no html, faz o subscribe automaticamente
@@ -170,7 +173,7 @@ export class DataFormComponent implements OnInit {
   //   return validator;
   // }
 
-  onSubmit() {
+  submit() {
     console.log(this.formulario.value);
 
     let valueSubmit = Object.assign({}, this.formulario.value)
@@ -186,8 +189,7 @@ export class DataFormComponent implements OnInit {
 
     console.log(valueSubmit);
 
-    if (this.formulario.valid) {
-      this.http.post(`https://httpbin.org/post`, JSON.stringify(valueSubmit))
+    this.http.post(`https://httpbin.org/post`, JSON.stringify(valueSubmit))
       .pipe(map((res) => res))
       .subscribe(dados => {
         console.log(dados);
@@ -198,64 +200,9 @@ export class DataFormComponent implements OnInit {
       },
       // No caso de acontecer erro, o formulário não vai ser resetado
       (error: any) => alert('Erro'));
-    } else {
-      console.log('Fomulário inválido!');
-      this.verificaValidacoesForm(this.formulario);
-    }
   }
 
-  verificaValidacoesForm(formGroup: FormGroup) {
-    // Função recursiva - Aquela que chama a si mesma com condição, senão seria um loop infinito
-    Object.keys(formGroup.controls).forEach(campo => {
-      console.log(campo);
-      const controle = formGroup.get(campo);
-      controle?.markAsTouched();
-      // Com o dirty, a mensagem de erro do email não apareceu
-      //controle?.markAsDirty();
-
-      if(controle instanceof FormGroup){
-        this.verificaValidacoesForm(controle);
-      }
-    })
-  }
-
-  resetar() {
-    this.formulario.reset();
-  }
-
-  // Verificando se o campo é válido ou o valor dele foi alterado, pelo component
-  verificaValidTouched(campo: string) {
-
-    // Acesso do campo desejado
-    //this.formulario.controls[campo]
-
-    // Existe também o get
-    return !this.formulario.get(campo)?.valid && (this.formulario.get(campo)?.touched || this.formulario.get(campo)?.dirty);
-    //                 Inválido                                 Com foco                               Modificado
-  }
-
-  // Verifica se o campo foi preenchido ou não, no caso, required. E, se foi alterado ou obteve o foco
-  verificaRequired(campo: string) {
-    return (
-      this.formulario.get(campo)?.hasError('required') &&
-      (this.formulario.get(campo)?.touched || this.formulario.get(campo)?.dirty)
-    )
-  }
-
-  verificaEmailInvalido() {
-    let campoEmail = this.formulario.get('email');
-    if (campoEmail?.errors) {
-      // A gente consegue acessar o email dentro de errors, porque o javascript também trata arrays e objetos como dicionário(chave-valor)
-      return campoEmail.errors['email'] && campoEmail.touched;
-    }
-  }
-
-  // Aplicando css no [ngClass] por meio do componente
-  aplicaCssErro(campo: string) {
-    return {
-      'is-invalid': this.verificaValidTouched(campo)
-    }
-  }
+  
 
   /*consultaCEP() {
 

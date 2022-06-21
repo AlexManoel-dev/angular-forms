@@ -7,6 +7,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ErrorMsgComponent } from './error-msg/error-msg.component';
 import { InputFieldComponent } from './input-field/input-field.component';
+import { BaseFormComponent } from './base-form/base-form.component';
 
 
 
@@ -16,6 +17,8 @@ import { InputFieldComponent } from './input-field/input-field.component';
     CampoControlErroComponent,
     ErrorMsgComponent,
     InputFieldComponent
+    // Como é uma classe abstrata que não vai poder ser instanciada diretamente, não entra na parte de declaração do módulo
+    // BaseFormComponent
   ],
   imports: [
     CommonModule,
@@ -28,6 +31,8 @@ import { InputFieldComponent } from './input-field/input-field.component';
     CampoControlErroComponent,
     ErrorMsgComponent,
     InputFieldComponent
+    // Como é uma classe abstrata que não vai poder ser instanciada diretamente, não entra na parte de declaração do módulo
+    // BaseFormComponent
   ],
   providers: [DropdownService]
 })
