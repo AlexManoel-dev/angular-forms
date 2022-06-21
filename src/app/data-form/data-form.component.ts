@@ -1,3 +1,4 @@
+import { Cidade } from './../shared/models/cidade.model';
 import { BaseFormComponent } from './../shared/base-form/base-form.component';
 import { VerificaEmailService } from './services/verifica-email.service';
 import { EstadoBr } from './../shared/models/estado-br';
@@ -22,8 +23,10 @@ export class DataFormComponent extends BaseFormComponent implements OnInit {
   // Variável que vai representar o formulário
   // Variável que vai representar o formulário
   // formulario: FormGroup = new FormGroup({});
-  // estados: EstadoBr[] = [];
-  estados: Observable<EstadoBr[]> = new Observable<EstadoBr[]>();
+  estados: EstadoBr[] = [];
+  cidades: Cidade[] = [];
+  // Foi comentado, pois não é necessário fazer 2 subscribes em um mesmo observable, portanto, a variável não precisa ser um observable de estados
+  // estados: Observable<EstadoBr[]> = new Observable<EstadoBr[]>();
   cargos: Cargo[] = [];
   tecnologias: Tecnologia[] = [];
   newsletterOp: Newsletter[] = [];
@@ -42,7 +45,12 @@ export class DataFormComponent extends BaseFormComponent implements OnInit {
   override ngOnInit(): void {
     // this.verificaEmailService.verificarEmail('email@email.com').subscribe();
     // Dar prioridade para usar o pipe async, quando utilizar informações que estão vindo de observables no template
-    this.estados = this.dropdownService.getEstadosBr(); // O pipe async, usado no ngFor no html, faz o subscribe automaticamente
+
+    // this.estados = this.dropdownService.getEstadosBr(); // O pipe async, usado no ngFor no html, faz o subscribe automaticamente
+    // FAZENDO O SUBSCRIBE SEM O PIPE ASYNC - PARA NÃO TER DUPLA CHAMADA DE SUBSCRIBE
+    this.dropdownService.getEstadosBr()
+      .subscribe(dados => this.estados = dados);
+
     // Mesmo com a destruição do componente, a inscrição pode ficar ativa. Ocorrendo o vazamento de memória "memory licks"
     // this.dropdownService.getEstadosBr()
     // .subscribe(dados => this.estados = dados);
@@ -120,6 +128,19 @@ export class DataFormComponent extends BaseFormComponent implements OnInit {
         //   ?.subscribe(dados => this.populaDadosForm(dados))
         // }
       // }
+
+      this.formulario.get('endereco.estado')?.valueChanges
+        .pipe(
+          tap(estado => console.log('Novo estado: ', estado)),
+          map(estado => this.estados.filter(e => e.sigla === estado)),
+          map((estados: any) => estados && estados.length > 0 ? estados[0].id : EMPTY),
+          switchMap((estadoId: number) => this.dropdownService.getCidades(estadoId)),
+          tap(console.log)
+        )
+        .subscribe(cidades => this.cidades = cidades);
+
+      // FORMA DE VERIFICAR SE OS DADOS ESTÃO CHEGANDO CORRETAMENTE
+      // this.dropdownService.getCidades(8).subscribe(console.log);
 
     //[Validators.required, Validators.minLength(3), Validators.maxLength(20)]
   }
