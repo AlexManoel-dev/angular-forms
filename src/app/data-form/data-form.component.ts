@@ -5,7 +5,7 @@ import { Tecnologia } from '../shared/models/tecnologia.model';
 import { Newsletter } from '../shared/models/newsletter.model';
 import { ConsultaCepService } from './../shared/services/consulta-cep.service';
 import { DropdownService } from './../shared/services/dropdown.service';
-import { map, Observable } from 'rxjs';
+import { distinctUntilChanged, EMPTY, empty, map, Observable, switchMap, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -87,6 +87,36 @@ export class DataFormComponent implements OnInit {
       // Já aqui, é necessário passar a função
       frameworks: this.buildFrameworks()
     });
+
+    // Pode funcionar em qualquer nível. Tanto do formulário, do FormGroup, do FormArray e FormControl - Obserav a mudança de status do nível em específico, a cada mudança de status do formulário
+    // STATUS - VALID, INVALID, PENDING e DISABLED
+    // this.formulario.statusChanges
+
+    // Valor do form que vai ser enviado
+    // this.formulario.value;
+    
+    // É feito para capturar cada mudança de valor do formulário
+    // this.formulario.valueChanges;
+
+    // FORMA DE CONSULTAR O CEP DE MANEIRA MAIS REATIVA, UTILIZANDO PROGRAMAÇÃO FUNCIONAL E REATIVA
+    this.formulario.get('endereco.cep')?.statusChanges
+      .pipe(
+        // Não exibe todas as alterações, só exibe quando a alteração é aplicada para um valor diferente
+        distinctUntilChanged(),
+        tap(value => console.log('status CEP: ', value)),
+        // Pode ser executada uma lógica, mas é preciso retornar um Observable
+        switchMap(status => status === 'VALID' ?
+          this.cepService.consultaCEP(this.formulario.get('endereco.cep')?.value)
+          : EMPTY
+        )
+      )
+      .subscribe(dados => dados ? this.populaDadosForm(dados) : {});
+      // Estava dentro do subscribe {
+        // if (status === 'VALID') {
+        //   this.cepService.consultaCEP(this.formulario.get('endereco.cep')?.value)
+        //   ?.subscribe(dados => this.populaDadosForm(dados))
+        // }
+      // }
 
     //[Validators.required, Validators.minLength(3), Validators.maxLength(20)]
   }
