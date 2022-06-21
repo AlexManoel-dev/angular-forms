@@ -1,0 +1,15 @@
+<div class="col-sm-12">
+    <!-- Label não está aparecendo -->
+    <label [attr.for]="id">{{ label }}</label>
+</div>
+<div class="col-sm-12">
+    <!-- Feito igual a Loiane, porém não funciona -->
+    <input [type]="type" class="form-control" [id]="id" placeholder="Nome" [ngClass]="classeCss" [readonly]="!!isReadOnly" [(ngModel)]="value">
+    <app-error-msg [control]="control" [label]="label"></app-error-msg>
+    <!-- Feito igual um comentário do vídeo da Loiane, funciona, porém não é o mais correto -->
+    <!-- Se precisar usar o input ainda, usa o debaixo, porém, se não, usa o de cima mesmo, e depois aprende a como fazer um componente de input customizado(utilizando o ControlValueAccessor(link no whats, talvez funcione)) -->
+    <!-- <input [type]="type" class="form-control" [id]="id" placeholder="placeholder" 
+        [disabled]="!!isReadOnly" [value]="value"
+        (input)="onChangeCb(v.value)" (blur)="onTouchedCb(null)" [ngClass]="classeCss" #v> -->
+    <!-- <app-error-msg [control]="$any(control)" label="Nome"></app-error-msg> -->
+</div>

@@ -58,7 +58,7 @@ export class DataFormComponent implements OnInit {
 
     // Outra forma de criar formulários reativos
     this.formulario = this.formBuilder.group({
-      nome: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(5)]],
+      nome: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(35)]],
       // Primeiro, o valor inicial. Segundo, validações síncronas. Terceiro, validações assíncronas
       // Se for só uma validação, funciona sem os colchetes, já se for mais de uma, é necessário. E sim, da pra fazer o uso de mais de uma validação por campo
       // O Angular ficou perdido com relação ao escopo, para esse erro não acontecer, basta associar o escopo da validação desse campo com o próprio componente
